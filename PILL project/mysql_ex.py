@@ -67,7 +67,7 @@ def train_model(data, labels):
 
 
 def main():
-    image_directory = 'PILL project\train'
+    image_directory = 'PILL project/train'
     db_config = {
         'host': '182.210.67.8',
         'user': 'user1',

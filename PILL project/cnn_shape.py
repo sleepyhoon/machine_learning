@@ -32,8 +32,9 @@ train_datagen = ImageDataGenerator(rescale=1./255,
 test_datagen = ImageDataGenerator(rescale=1./255)
 
 # 데이터 로딩 및 증강
-train_generator = train_datagen.flow_from_directory(train_path, target_size=(64, 64), batch_size=32, class_mode='binary')
-test_generator = test_datagen.flow_from_directory(test_path, target_size=(64, 64), batch_size=32, class_mode='binary')
+train_generator = train_datagen.flow_from_directory(train_path, target_size=(64, 64), batch_size=32, class_mode='categorical')
+test_generator = test_datagen.flow_from_directory(test_path, target_size=(64, 64), batch_size=32, class_mode='categorical')
+
 
 # 모델 학습
 model.fit(train_generator, epochs=10, validation_data=test_generator)
