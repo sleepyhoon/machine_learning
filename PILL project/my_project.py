@@ -22,10 +22,6 @@ a2,b2를 모두 가지고 있는 알약은 1로 세팅하였다.
 가장 높은 상위 5개(일단 임의로 설정)를 출력한다.
 '''
 
-    
-def text_identify(text):
-    # 인식한 텍스트를 전달받는 함수. 아직 어떻게 구현할지 모름
-    pass
 
 def find_key(dictionary, value):
     return next((key for key, val in dictionary.items() if val == value), None)
@@ -97,13 +93,13 @@ def WhatIsColor(color_class,weight,cursor):
             else: # 1,2순위 색깔들 모임
                 color_weight_list[i][5] += weight[1]
     return color_weight_list
-
+# 모양은 1순위와 2순위를 입력받음.
 def WhatIsShape(list,shape_class,weight):
     for i in range(len(list)):
         if list[i][2] == shape_class[0]: # 1순위 모양
-            list[i][5] += 4
+            list[i][5] += weight[0]
         elif list[i][2] == shape_class[1]: # 2순위 모양
-            list[i][5] += 1
+            list[i][5] += weight[2]
         else: # 그외의 모양
             list[i][5] -= 2
     # priority를 기준으로 정렬
@@ -116,8 +112,19 @@ def WhatIsShape(list,shape_class,weight):
     for row in top_5_color_weight:
         print(row)
 
-def WhatIsText():
-    pass
+def WhatIsText(input_text,cursor):
+    # 인식한 텍스트를 전달받는 함수. 문자열로 입력받는다고 생각하자. ['a','b'] 뭐가 앞뒤인지 모르기 때문에 둘다 해봐야할듯
+    query = "SELECT print_front, print_back, priority FROM pill_data WHERE (print_front LIKE %s AND print_back LIKE %s) \
+        OR (print_front LIKE %s AND print_back LIKE %s)"
+    cursor.execute(query, (input_text[0], input_text[1], input_text[1], input_text[0]))
+
+    text = cursor.fetchall()
+    # 튜플의 리스트로 변환
+    text_weight_list = [list(row) for row in text]
+    for i in range(len(text_weight_list)):
+        text_weight_list[i][2] += 4
+    for row in text_weight_list:
+        print(row)
 
 def main():
     connection = mysql.connector.connect(
@@ -138,7 +145,7 @@ def main():
     # 사진 속 알약의 feature를 입력받음.
     input_color = [0,1,-1,-1] # 하양과 노랑
     input_shape = [0,1] # 원형과 타원형
-    input_text = ["",""] # 글씨가 없다고 가정
+    input_text = ["","YH"] # 글씨가 없다고 가정
     
     # 일단 임의로 가중치를 설정해놓음
     weight = [4,2,1]
@@ -147,7 +154,7 @@ def main():
     label_class = decoding_to_label(input_shape,find_key)
     list = WhatIsColor(color_class,weight,cursor)
     WhatIsShape(list,label_class,weight)
-    WhatIsText()
+    WhatIsText(input_text,cursor)
     connection.close()
     
 if __name__ == '__main__':
