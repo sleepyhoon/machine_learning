@@ -1,16 +1,26 @@
-def count_overlapping_substrings(string1, string2):
-    count = 0
+import mysql.connector
+from mysql.connector import Error
+from Prediction_DB import Prediction
 
-    # 두 문자열 중 짧은 문자열의 길이를 기준으로 반복
-    for i in range(1, min(len(string1), len(string2)) + 1):
-        # 각 위치에서의 부분 문자열 비교
-        if string1[-i:] == string2[:i]:
-            count += 1
+def main():
+    connection = mysql.connector.connect(
+        host='182.210.67.8',
+        user='user1',
+        password='1111',
+        database='pilldata'
+    )
+    try:
+        connection
+    except Error as e:
+        print(f"Error connecting to MySQL database: {e}")
+        return
 
-    return count
-
-# 예시 사용
-string1 = "abc"
-string2 = "bbbbabcbbb"
-overlap_count = count_overlapping_substrings(string1, string2)
-print(f"두 문자열에서 겹치는 부분 문자열의 개수: {overlap_count}")
+    # 사진 속 알약의 feature를 입력받음.
+    input_color = [0,1,2,3,2,3,5,6] # 하양,노랑...
+    input_shape = [0,1] # 원형과 타원형
+    input_text = ["H4",""] # 임의의 글씨
+    Prediction(input_color,input_shape,input_text,connection)
+    connection.close()
+    
+if __name__ == '__main__':
+    main()
