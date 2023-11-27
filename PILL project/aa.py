@@ -16,9 +16,9 @@ def main():
         return
 
     # 사진 속 알약의 feature를 입력받음.
-    input_color = [0,1,2,3,2,3,5,6] # 하양,노랑...
+    input_color = [0,1,2,3,0,1,2,3] # 하양,노랑,주황,분홍 // 주황,분홍,갈색,연두
     input_shape = [0,1] # 원형과 타원형
-    input_text = ["H4",""] # 임의의 글씨
+    input_text = ["Y","Y"] # 앞면 일수도 있고, 뒷면 일수도 있음
     Prediction(input_color,input_shape,input_text,connection)
     connection.close()
     
